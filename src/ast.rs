@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub(crate) enum Expr {
     Factor(Box<Factor>),
     BinaryOp {
@@ -14,7 +14,7 @@ pub(crate) enum TermBinaryOp {
     Sub,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub(crate) enum Factor {
     Literal(f64),
     Group(Box<Expr>),
