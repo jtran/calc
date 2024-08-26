@@ -2,6 +2,8 @@ use recursion::{Collapsible, CollapsibleExt, MappableFrame, PartiallyApplied};
 
 use crate::ast::{Expr, Factor, FactorBinaryOp, TermBinaryOp};
 
+type Error = Box<dyn std::error::Error>;
+
 pub(crate) enum ExprFrame<A> {
     Factor(Box<Factor>),
     BinaryOp { op: TermBinaryOp, lhs: A, rhs: A },
@@ -79,23 +81,23 @@ impl<'a> Collapsible for &'a Factor {
 pub(crate) struct Evaluator;
 
 impl Evaluator {
-    pub(crate) fn eval(&mut self, expr: &Expr) -> f64 {
-        expr.collapse_frames(|frame| match frame {
+    pub(crate) fn eval(&mut self, expr: &Expr) -> Result<f64, Error> {
+        expr.try_collapse_frames(|frame| match frame {
             ExprFrame::Factor(f) => self.eval_factor(f.as_ref()),
             ExprFrame::BinaryOp { op, lhs, rhs } => match op {
-                TermBinaryOp::Add => lhs + rhs,
-                TermBinaryOp::Sub => lhs - rhs,
+                TermBinaryOp::Add => Ok(lhs + rhs),
+                TermBinaryOp::Sub => Ok(lhs - rhs),
             },
         })
     }
 
-    fn eval_factor(&mut self, factor: &Factor) -> f64 {
-        factor.collapse_frames(|frame| match frame {
-            FactorFrame::Literal(a) => a,
+    fn eval_factor(&mut self, factor: &Factor) -> Result<f64, Error> {
+        factor.try_collapse_frames(|frame| match frame {
+            FactorFrame::Literal(a) => Ok(a),
             FactorFrame::Group(e) => self.eval(e.as_ref()),
             FactorFrame::BinaryOp { op, lhs, rhs } => match op {
-                FactorBinaryOp::Mul => lhs * rhs,
-                FactorBinaryOp::Div => lhs / rhs,
+                FactorBinaryOp::Mul => Ok(lhs * rhs),
+                FactorBinaryOp::Div => Ok(lhs / rhs),
             },
         })
     }
