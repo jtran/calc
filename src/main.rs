@@ -1,7 +1,8 @@
 use ast::{Expr, Factor};
-use recursion::Evaluator;
+use evaluator::Evaluator;
 
 mod ast;
+mod evaluator;
 mod recursion;
 
 fn main() {
