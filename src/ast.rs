@@ -1,3 +1,10 @@
+pub(crate) type Identifier = String;
+
+#[derive(Debug, Clone)]
+pub(crate) enum Stmt {
+    Let(Identifier, Box<Expr>),
+}
+
 #[derive(Debug, Clone)]
 pub(crate) enum Expr {
     Factor(Box<Factor>),
@@ -17,6 +24,7 @@ pub(crate) enum TermBinaryOp {
 #[derive(Debug, Clone)]
 pub(crate) enum Factor {
     Literal(f64),
+    Variable(Identifier),
     Group(Box<Expr>),
     BinaryOp {
         op: FactorBinaryOp,
