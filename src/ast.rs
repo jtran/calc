@@ -18,6 +18,7 @@ pub(crate) enum Expr {
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum TermBinaryOp {
     Add,
+    #[allow(dead_code)]
     Sub,
 }
 
@@ -25,7 +26,9 @@ pub(crate) enum TermBinaryOp {
 pub(crate) enum Factor {
     Literal(f64),
     Variable(Identifier),
+    #[allow(dead_code)]
     Group(Box<Expr>),
+    #[allow(dead_code)]
     BinaryOp {
         op: FactorBinaryOp,
         lhs: Box<Factor>,
@@ -35,6 +38,8 @@ pub(crate) enum Factor {
 
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum FactorBinaryOp {
+    #[allow(dead_code)]
     Mul,
+    #[allow(dead_code)]
     Div,
 }
