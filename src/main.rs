@@ -23,4 +23,5 @@ fn main() {
     let mut evaluator = Evaluator::default();
     let result = evaluator.eval_stmts(&stmts);
     println!("{:?}", result);
+    println!("{:#?}", evaluator.bindings);
 }

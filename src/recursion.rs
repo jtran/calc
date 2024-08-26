@@ -84,7 +84,7 @@ impl<'a> Collapsible for &'a Factor {
 
 #[derive(Debug, Default)]
 pub(crate) struct Evaluator {
-    bindings: HashMap<Identifier, f64>,
+    pub bindings: HashMap<Identifier, f64>,
 }
 
 impl Evaluator {
