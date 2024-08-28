@@ -38,6 +38,7 @@ pub(crate) enum FactorFrame<A> {
     Variable(Identifier),
     Group(Box<Expr>),
     BinaryOp { op: FactorBinaryOp, lhs: A, rhs: A },
+    Call(A, Vec<Expr>),
 }
 
 impl MappableFrame for FactorFrame<PartiallyApplied> {
@@ -53,6 +54,7 @@ impl MappableFrame for FactorFrame<PartiallyApplied> {
                 lhs: f(lhs),
                 rhs: f(rhs),
             },
+            FactorFrame::Call(fun, args) => FactorFrame::Call(f(fun), args),
         }
     }
 }
@@ -66,6 +68,7 @@ impl<'a> Collapsible for &'a Factor {
             Factor::Variable(ident) => FactorFrame::Variable(ident.clone()),
             Factor::Group(e) => FactorFrame::Group(e.clone()),
             Factor::BinaryOp { op, lhs, rhs } => FactorFrame::BinaryOp { op: *op, lhs, rhs },
+            Factor::Call(fun, args) => FactorFrame::Call(fun, args.clone()),
         }
     }
 }

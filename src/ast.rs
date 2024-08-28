@@ -3,7 +3,16 @@ pub(crate) type Identifier = String;
 #[derive(Debug, Clone)]
 pub(crate) enum Stmt {
     Let(Identifier, Box<Expr>),
+    Fun(Identifier, Box<Function>),
 }
+
+#[derive(Debug, Clone)]
+pub(crate) struct Function {
+    pub params: Params,
+    pub body: Expr,
+}
+
+pub(crate) type Params = Vec<Identifier>;
 
 #[derive(Debug, Clone)]
 pub(crate) enum Expr {
@@ -34,6 +43,7 @@ pub(crate) enum Factor {
         lhs: Box<Factor>,
         rhs: Box<Factor>,
     },
+    Call(Box<Factor>, Vec<Expr>),
 }
 
 #[derive(Debug, Clone, Copy)]
