@@ -28,11 +28,7 @@ impl<'a> Collapsible for &'a Expr {
     fn into_frame(self) -> <Self::FrameToken as MappableFrame>::Frame<Self> {
         match self {
             Expr::Factor(f) => ExprFrame::Factor(f.clone()),
-            Expr::BinaryOp { op, lhs, rhs } => ExprFrame::BinaryOp {
-                op: *op,
-                lhs: lhs,
-                rhs: rhs,
-            },
+            Expr::BinaryOp { op, lhs, rhs } => ExprFrame::BinaryOp { op: *op, lhs, rhs },
         }
     }
 }
@@ -69,11 +65,7 @@ impl<'a> Collapsible for &'a Factor {
             Factor::Literal(a) => FactorFrame::Literal(*a),
             Factor::Variable(ident) => FactorFrame::Variable(ident.clone()),
             Factor::Group(e) => FactorFrame::Group(e.clone()),
-            Factor::BinaryOp { op, lhs, rhs } => FactorFrame::BinaryOp {
-                op: *op,
-                lhs: lhs,
-                rhs: rhs,
-            },
+            Factor::BinaryOp { op, lhs, rhs } => FactorFrame::BinaryOp { op: *op, lhs, rhs },
         }
     }
 }
