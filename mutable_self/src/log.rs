@@ -1,7 +1,6 @@
 use crate::{
     ast::{Expr, Factor, Stmt},
-    evaluator::{self, Error},
-    runtime::Value,
+    runtime::{self, Error, Value},
 };
 
 #[derive(Debug, Default)]
@@ -11,7 +10,7 @@ pub(crate) struct Print {
 
 const INDENT_WIDTH: usize = 2;
 
-impl evaluator::Visit for Print {
+impl runtime::Visit for Print {
     fn pre_visit_stmt(&mut self, stmt: &Stmt) -> Result<(), Error> {
         println!(
             "{:indent$}Eval stmt={stmt:?}",
