@@ -31,5 +31,3 @@ I think that these issues make it non-trivial, and manual implementation of trav
 However, that's a little unsatisfying.  If this were a functional language, the answer would probably be [CPS](https://en.wikipedia.org/wiki/Continuation-passing_style).  But even in languages where CPS is commonly used, it's easy to make code difficult to read.  There would need to be _significant_ benefit to justify breaking from idiomatic Rust.
 
 One could theoretically do this with async Rust.  But now you run into all the problems with async, with lifetimes crossing async boundaries.
-
-Another crate that warrants further research is the [with_locals](https://github.com/danielhenrymantilla/with_locals.rs) crate, which uses a proc-macro to transform normal-looking Rust code into calling functions with closures, similar to how Haskell's `do` notation gets desugared.  But I'm not too optimistic that this will solve our problems.
