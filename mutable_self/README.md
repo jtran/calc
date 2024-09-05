@@ -2,13 +2,17 @@
 
 ## Mutable self
 
-In this design, each analysis has its own module that is oblivious to other modules.  The `ast` module has no code for evaluation or other analyses.  AST types are dumb structs.
+In this design, each analysis has its own module that is oblivious to other analysis modules.  The `ast` module has no code for evaluation or other analyses.  AST types are dumb structs.
 
 Static analyses like unparsing are implemented in a different way from dynamic analyses like logging.  This is because static analyses visit each AST node exactly once.  On the other hand, dynamic analyses follow execution.  AST nodes may be visited zero or more times.
 
-For static analyses, we use the visitor pattern.  But crucially, state is owned by fields of `self`, and we run everything under `&mut self`.  This is both more ergonomic than passing state as parameters and more performant than returning temporary state that needs to get combined.  State can be directly mutated.
+For both static and dynamic analyses, state is owned by fields of `self`, and we run everything under `&mut self`.  This is both more ergonomic than passing state as parameters and more performant than returning temporary state that needs to get combined.  State can be directly mutated, making it as efficient as possible.
 
-For dynamic analyses, the evaluator drives all recursion.  Additional analyses can be activated by adding visitors to the evaluator.  Visitors implement a trait with pre- and post-visit methods.
+State is never cloned.  We don't even derive `Clone`.
+
+For static analyses, we implement the visitor pattern and manually traverse.
+
+For dynamic analyses, the evaluator drives the traversal.  Additional analyses can be activated by adding visitors to the evaluator.  Visitors implement a trait with pre- and post-visit methods.
 
 The evaluator's `eval_expr()` calls `pre_visit()` on all visitors, does `inner_eval_expr()`, and finally calls `post_visit()` on all visitors.  This allows us to separate evaluation logic from visitor dispatch.  It also allows us to use `?` in inner functions, which is extremely convenient.
 
@@ -30,4 +34,4 @@ I think that these issues make it non-trivial, and manual implementation of trav
 
 However, that's a little unsatisfying.  If this were a functional language, the answer would probably be [CPS](https://en.wikipedia.org/wiki/Continuation-passing_style).  But even in languages where CPS is commonly used, it's easy to make code difficult to read.  There would need to be _significant_ benefit to justify breaking from idiomatic Rust.
 
-One could theoretically do this with async Rust.  But now you run into all the problems with async, with lifetimes crossing async boundaries.
+One could theoretically do this with async Rust.  But I don't think it's worth the effort unless running on large programs.

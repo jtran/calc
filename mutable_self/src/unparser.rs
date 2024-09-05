@@ -1,3 +1,4 @@
+//! An example of a static analysis.
 use std::fmt::Write;
 
 use crate::ast::{Expr, Factor, FactorBinaryOp, Stmt, TermBinaryOp};

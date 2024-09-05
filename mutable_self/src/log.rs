@@ -1,3 +1,4 @@
+//! An example of a dynamic analysis.
 use crate::{
     ast::{Expr, Factor, Stmt},
     runtime::{self, Error, Value},
