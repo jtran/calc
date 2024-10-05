@@ -1,18 +1,32 @@
+#[derive(Debug, Clone)]
+pub(crate) enum Type {
+    Number,
+    #[allow(dead_code)]
+    Arrow(Box<Type>, Box<Type>),
+}
+
 pub(crate) type Identifier = String;
 
 #[derive(Debug, Clone)]
 pub(crate) enum Stmt {
-    Let(Identifier, Box<Expr>),
+    Let(Identifier, Type, Box<Expr>),
     Fun(Identifier, Box<Function>),
 }
 
 #[derive(Debug, Clone)]
 pub(crate) struct Function {
     pub params: Params,
+    pub return_ty: Type,
     pub body: Expr,
 }
 
-pub(crate) type Params = Vec<Identifier>;
+pub(crate) type Params = Vec<Param>;
+
+#[derive(Debug, Clone)]
+pub(crate) struct Param {
+    pub name: Identifier,
+    pub ty: Type,
+}
 
 #[derive(Debug, Clone)]
 pub(crate) enum Expr {

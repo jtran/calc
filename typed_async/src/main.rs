@@ -1,4 +1,4 @@
-use ast::{Expr, Factor};
+use ast::{Expr, Factor, Param, Type};
 use evaluator::Evaluator;
 
 mod ast;
@@ -12,10 +12,12 @@ async fn main() {
     let stmts = [
         ast::Stmt::Let(
             "x".to_owned(),
+            Type::Number,
             Box::new(ast::Expr::Factor(Box::new(ast::Factor::Literal(1.0)))),
         ),
         ast::Stmt::Let(
             "y".to_owned(),
+            Type::Number,
             Box::new(ast::Expr::BinaryOp {
                 op: ast::TermBinaryOp::Add,
                 lhs: Box::new(Expr::Factor(Box::new(Factor::Variable("x".to_owned())))),
@@ -25,7 +27,17 @@ async fn main() {
         ast::Stmt::Fun(
             "add".to_owned(),
             Box::new(ast::Function {
-                params: vec!["a".to_string(), "b".to_string()],
+                params: vec![
+                    Param {
+                        name: "a".to_owned(),
+                        ty: Type::Number,
+                    },
+                    Param {
+                        name: "b".to_owned(),
+                        ty: Type::Number,
+                    },
+                ],
+                return_ty: Type::Number,
                 body: Expr::BinaryOp {
                     op: ast::TermBinaryOp::Add,
                     lhs: Box::new(Expr::Factor(Box::new(Factor::Variable("a".to_owned())))),
@@ -35,6 +47,7 @@ async fn main() {
         ),
         ast::Stmt::Let(
             "answer".to_owned(),
+            Type::Number,
             Box::new(Expr::Factor(Box::new(Factor::Call(
                 Box::new(Factor::Variable("add".to_owned())),
                 vec![

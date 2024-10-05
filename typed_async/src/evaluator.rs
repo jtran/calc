@@ -47,7 +47,7 @@ impl Evaluator {
 
     async fn inner_eval_stmt(&mut self, stmt: &Stmt) -> Result<Value, Error> {
         match stmt {
-            Stmt::Let(ident, expr) => {
+            Stmt::Let(ident, _ty, expr) => {
                 let value = self.eval_expr(expr).await?;
                 self.bindings.insert(ident.clone(), value.clone());
                 Ok(value)
@@ -164,7 +164,7 @@ impl Evaluator {
                 };
                 let mut body_env = env.clone();
                 for (param, arg) in fun.params.iter().zip(args.iter()) {
-                    body_env.insert(param.clone(), self.eval_expr(arg).await?);
+                    body_env.insert(param.name.clone(), self.eval_expr(arg).await?);
                 }
                 let current_bindings = std::mem::replace(&mut self.bindings, body_env);
                 let result = self.eval_expr(&fun.body).await;

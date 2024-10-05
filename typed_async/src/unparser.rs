@@ -1,7 +1,7 @@
 //! An example of a static analysis.
 use std::fmt::Write;
 
-use crate::ast::{Expr, Factor, FactorBinaryOp, Stmt, TermBinaryOp};
+use crate::ast::{Expr, Factor, FactorBinaryOp, Stmt, TermBinaryOp, Type};
 
 #[derive(Debug, Default)]
 pub(crate) struct Unparser {
@@ -16,6 +16,17 @@ impl Unparser {
         &self.out
     }
 
+    pub(crate) fn unparse_type(&mut self, ty: &Type) -> Result<(), std::fmt::Error> {
+        match ty {
+            Type::Number => write!(self.out, "number"),
+            Type::Arrow(t1, t2) => {
+                self.unparse_type(t1)?;
+                write!(self.out, " -> ")?;
+                self.unparse_type(t2)
+            }
+        }
+    }
+
     pub(crate) fn unparse_stmts(&mut self, stmts: &[Stmt]) -> Result<(), std::fmt::Error> {
         for stmt in stmts {
             self.unparse_stmt(stmt)?;
@@ -25,14 +36,16 @@ impl Unparser {
 
     fn unparse_stmt(&mut self, stmt: &Stmt) -> Result<(), std::fmt::Error> {
         match stmt {
-            Stmt::Let(name, expr) => {
+            Stmt::Let(name, ty, expr) => {
                 write!(
                     self.out,
-                    "{:indent$}let {name} = ",
+                    "{:indent$}let {name}: ",
                     "",
                     indent = self.indent * INDENT_WIDTH,
                     name = name
                 )?;
+                self.unparse_type(ty)?;
+                write!(self.out, " = ")?;
                 self.unparse_expr(expr)?;
                 writeln!(self.out)?;
             }
@@ -48,9 +61,12 @@ impl Unparser {
                     if i > 0 {
                         write!(self.out, ", ")?;
                     }
-                    write!(self.out, "{}", param)?;
+                    write!(self.out, "{}: ", param.name)?;
+                    self.unparse_type(&param.ty)?;
                 }
-                write!(self.out, ") = ")?;
+                write!(self.out, "): ")?;
+                self.unparse_type(&fun.return_ty)?;
+                write!(self.out, " = ")?;
                 self.unparse_expr(&fun.body)?;
                 writeln!(self.out)?;
             }
