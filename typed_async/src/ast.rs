@@ -1,8 +1,7 @@
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum Type {
     Number,
-    #[allow(dead_code)]
-    Arrow(Box<Type>, Box<Type>),
+    Arrow(Vec<Type>, Box<Type>),
 }
 
 pub(crate) type Identifier = String;
@@ -66,4 +65,22 @@ pub(crate) enum FactorBinaryOp {
     Mul,
     #[allow(dead_code)]
     Div,
+}
+
+impl std::fmt::Display for Type {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Type::Number => write!(f, "number"),
+            Type::Arrow(param_tys, t2) => {
+                write!(f, "(")?;
+                for (i, t) in param_tys.iter().enumerate() {
+                    if i > 0 {
+                        write!(f, ", ")?;
+                    }
+                    write!(f, "{}", t)?;
+                }
+                write!(f, ") -> {t2}")
+            }
+        }
+    }
 }

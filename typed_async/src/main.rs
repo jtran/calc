@@ -1,10 +1,12 @@
 use ast::{Expr, Factor, Param, Type};
 use evaluator::Evaluator;
+use tc::TypeChecker;
 
 mod ast;
 mod evaluator;
 mod log;
 mod runtime;
+mod tc;
 mod unparser;
 
 #[tokio::main]
@@ -38,6 +40,7 @@ async fn main() {
                     },
                 ],
                 return_ty: Type::Number,
+                // return_ty: Type::Arrow(vec![Type::Number], Box::new(Type::Number)),
                 body: Expr::BinaryOp {
                     op: ast::TermBinaryOp::Add,
                     lhs: Box::new(Expr::Factor(Box::new(Factor::Variable("a".to_owned())))),
@@ -58,8 +61,19 @@ async fn main() {
         ),
     ];
 
+    let mut type_checker = TypeChecker::default();
+    let result = type_checker.check_stmts(&stmts);
+    println!("{:?}", result);
+    println!("{:#?}", type_checker.bindings);
+
+    // Refuse to evaluate if type checking failed.
+    if result.is_err() {
+        return;
+    }
+
     let mut evaluator = Evaluator::default();
     evaluator.visitors.push(Box::new(log::Print::default()));
+    println!();
     let result = evaluator.eval_stmts(&stmts).await;
     println!("{:?}", result);
     println!("{:#?}", evaluator.bindings);

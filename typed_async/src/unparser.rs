@@ -17,14 +17,7 @@ impl Unparser {
     }
 
     pub(crate) fn unparse_type(&mut self, ty: &Type) -> Result<(), std::fmt::Error> {
-        match ty {
-            Type::Number => write!(self.out, "number"),
-            Type::Arrow(t1, t2) => {
-                self.unparse_type(t1)?;
-                write!(self.out, " -> ")?;
-                self.unparse_type(t2)
-            }
-        }
+        write!(self.out, "{ty}")
     }
 
     pub(crate) fn unparse_stmts(&mut self, stmts: &[Stmt]) -> Result<(), std::fmt::Error> {
