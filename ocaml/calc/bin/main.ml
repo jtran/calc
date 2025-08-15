@@ -29,12 +29,27 @@ let stmts =
                  [ Calc.Ast.Factor (Calc.Ast.Variable "x")
                  ; Calc.Ast.Factor (Calc.Ast.Variable "y") ] } ) ) ]
 
-let _ =
+let type_check_result =
   match Calc.Tc.check_stmts stmts with
   | Ok env ->
       Printf.printf "Type checking succeeded.\n" ;
       Hashtbl.iter
         (fun id ty -> Printf.printf "  %s : %s\n" id (Calc.Ast.show_typ ty))
-        env
+        env ;
+      Some ()
   | Error msg ->
-      Printf.eprintf "Type error: %s\n" msg
+      Printf.eprintf "Type error: %s\n" msg ;
+      None
+
+let _ =
+  match type_check_result with
+  | Some () -> (
+      let eval_result = Calc.Evaluator.eval_stmts stmts in
+      match eval_result with
+      | Ok value ->
+          Printf.printf "Evaluation succeeded: %s\n"
+            (Calc.Runtime.show_value value)
+      | Error msg ->
+          Printf.eprintf "Evaluation error: %s\n" msg )
+  | None ->
+      ()

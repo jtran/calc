@@ -1,14 +1,14 @@
 type typ = Number | Arrow of typ list * typ [@@deriving show]
 
-type identifier = string
+type identifier = string [@@deriving show]
 
 type stmt = Let of identifier * typ * expr | Fun of identifier * func
 
-and func = {params: params; return_ty: typ; body: expr}
+and func = {params: params; return_ty: typ; body: expr} [@@deriving show]
 
 and params = param list
 
-and param = {name: identifier; ty: typ}
+and param = {name: identifier; ty: typ} [@@deriving show]
 
 and expr =
   | Factor of factor
