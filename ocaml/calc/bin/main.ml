@@ -53,3 +53,8 @@ let _ =
           Printf.eprintf "Evaluation error: %s\n" msg )
   | None ->
       ()
+
+let _ =
+  let unparsed = Calc.Unparser.unparse_stmts stmts in
+  Printf.printf "\n" ;
+  Printf.printf "%s\n" unparsed
