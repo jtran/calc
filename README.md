@@ -1,3 +1,3 @@
 # Calc
 
-Minimal language to experiment with recursion schemes.
+Minimal language to experiment with interpreter structure and design.
