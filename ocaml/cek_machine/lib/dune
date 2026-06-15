@@ -1,0 +1,4 @@
+(library
+ (name calc)
+ (preprocess
+  (pps ppx_deriving.show)))
