@@ -1,8 +1,8 @@
 # calc
 
-A simple statically typed language implemented in OCaml.
-
-This is similar to `typed_async`.
+This is based on `baseline_typed`. The evaluator is changed to not recurse.
+Instead, it returns the next expression to evaluate and how to continue. This is
+called a CEK machine.
 
 # Usage
 
